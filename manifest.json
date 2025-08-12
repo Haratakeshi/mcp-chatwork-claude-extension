@@ -3,6 +3,7 @@
   "name": "mcp-chatwork-claude-extension",
   "version": "0.5.0",
   "description": "Chatwork APIの主要な機能を利用するためのMCP拡張機能です",
+  "icon": "icon.png",
   "author": {
     "name": "Haratake"
   },
