@@ -1,0 +1,32 @@
+{
+  "dxt_version": "0.1",
+  "name": "mcp-chatwork-claude-extension",
+  "version": "0.5.0",
+  "description": "Chatwork APIの主要な機能を利用するためのMCP拡張機能です",
+  "author": {
+    "name": "Haratake"
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "dist/server.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/dist/server.js"
+      ],
+      "env": {
+        "CHATWORK_API_TOKEN": "${user_config.CHATWORK_API_TOKEN}"
+      }
+    }
+  },
+  "user_config": {
+    "CHATWORK_API_TOKEN": {
+      "type": "string",
+      "title": "Chatwork API Token",
+      "description": "Chatwork API Tokenを入力してください。",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "license": "MIT"
+}
