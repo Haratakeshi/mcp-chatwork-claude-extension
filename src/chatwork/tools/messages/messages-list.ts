@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ChatworkAuthenticator } from '../../shared/auth.js';
 import { handleChatworkError } from '../../shared/error-handler.js';
 import { ToolEnv } from '../../shared/types.js';
+import { convertUnixTimestampToDateTime } from '../../shared/time-converter.js';
 
 // 入力スキーマを定義
 export const MessagesListSchema = z.object({
@@ -37,7 +38,20 @@ export async function messagesList(env: ToolEnv, input: MessagesListInput): Prom
     });
 
     // 3. レスポンス整形
-    return response.data;
+    const messages = response.data;
+    if (Array.isArray(messages)) {
+      return messages.map((message: any) => {
+        const newMessage = { ...message };
+        if (newMessage.send_time) {
+          newMessage.send_time_str = convertUnixTimestampToDateTime(newMessage.send_time);
+        }
+        if (newMessage.update_time) {
+          newMessage.update_time_str = convertUnixTimestampToDateTime(newMessage.update_time);
+        }
+        return newMessage;
+      });
+    }
+    return messages;
   } catch (error) {
     handleChatworkError(error);
     throw error;

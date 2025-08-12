@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ChatworkAuthenticator } from '../../shared/auth.js';
 import { handleChatworkError } from '../../shared/error-handler.js';
 import { ToolEnv } from '../../shared/types.js';
+import { convertUnixTimestampToDateTime } from '../../shared/time-converter.js';
 
 // 入力スキーマを定義
 export const MessagesGetSchema = z.object({
@@ -33,7 +34,14 @@ export async function messagesGet(env: ToolEnv, input: MessagesGetInput): Promis
     const response = await client.get(`/rooms/${validatedInput.room_id}/messages/${validatedInput.message_id}`);
 
     // 3. レスポンス整形
-    return response.data;
+    const message = response.data;
+    if (message.send_time) {
+      message.send_time_str = convertUnixTimestampToDateTime(message.send_time);
+    }
+    if (message.update_time) {
+      message.update_time_str = convertUnixTimestampToDateTime(message.update_time);
+    }
+    return message;
   } catch (error) {
     handleChatworkError(error);
     throw error;
